@@ -56,6 +56,11 @@ static int dmp_ctr(struct dm_target *ti, unsigned int argc, char **argv) {
         return -EINVAL;
     }
  
+    if (!sscanf(argv[1], "%d", &reinit)) {
+        ti->error = "Second argument not a number";
+        return -EINVAL;
+    }
+
     DMINFO("Initializing dm proxy target for %s", argv[0]);
     
     if (dm_get_device(ti, argv[0], dm_table_get_mode(ti->table), &dev)) {
@@ -64,12 +69,8 @@ static int dmp_ctr(struct dm_target *ti, unsigned int argc, char **argv) {
     }
     ti->private = dev;
     
-    DMINFO("Target dmp %s constructed", argv[0]);
+    DMINFO("Target dmp directed to %s constructed", argv[0]);
     
-    if (!sscanf(argv[1], "%d", &reinit)) {
-        ti->error = "Second argument not a number";
-        return -EINVAL;
-    }
     if (reinit) {
         stats.read_cnt = 0;
         stats.read_avg = 0;
@@ -153,9 +154,9 @@ static int __init dmp_init(void) {
 
 static void __exit dmp_exit(void) {
     DMINFO("Unregistering dmp target");
+    dm_unregister_target(&dmp_target);
     sysfs_remove_file(stat_kobj, &stats_attr.attr);
     kobject_put(stat_kobj);
-    dm_unregister_target(&dmp_target);
     DMINFO("Unregistered dmp target successfully");
 }
 
