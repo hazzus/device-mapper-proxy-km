@@ -15,6 +15,19 @@ Or use your package-manager to install those
 It requires 2 arguments in table when creating: original destination device and rather reload stats or not (maybe usefull 
 if creating many proxies). Can be tested via `dmsetup`
 
+# Make commands for testing and setting up
+1. Use `make` to build module
+2. Use `make install` to install module (will run build before)
+3. Use `make setup` to automate setup steps: create some devices (checks installation)
+4. Use `make load` to generate some load on setuped device and show stats. (will run setup before)
+5. Use `make destroy` to cleanup after setup
+6. Use `make clean` to cleanup build files
+
+So shortcuts:
+* `make install load` for installing and loading at the first time running and leaving files
+* `./load.sh` for repeating load on installed things
+* `make install load destroy clean` for full cycle without lefovers
+
 # Example: 
 ```shell
 # creating a dumb-zero target original vbd:
@@ -40,7 +53,3 @@ sudo dmsetup create proxy2 --table "0 512 dmp /dev/mapper/dumb 1"
 # without:
 sudo dmsetup create proxy3 --table "0 512 dmp /dev/mapper/dumb 0"
 ```
-
-# Automatical testing
-1. Use `make setup` to automate setup steps.
-2. Use `make load` to generate some load on setuped device and show stats.
