@@ -85,6 +85,7 @@ static int dmp_map(struct dm_target* ti, struct bio* bio) {
     struct dm_dev *dev = (struct dm_dev*)ti->private;
     // the sector size
     long long bio_size = bio_sectors(bio) * 512;
+    // long long bio_size = bio_cur_bytes(bio);
     
     // using streaming algo to prevent overflow
     switch (bio_op(bio)) {
